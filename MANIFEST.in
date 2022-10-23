@@ -10,4 +10,4 @@ include LICENSE
 include setup.py
 
 # Include the data files
-recursive-include RobertJN64TemplatePackage *
+recursive-include CV_Robot *

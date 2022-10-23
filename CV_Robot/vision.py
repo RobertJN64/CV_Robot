@@ -1,11 +1,12 @@
 import CV_Robot.opencv_api as cv_api
 import cv2
 
-CV_BASIC_MODEL = '/some/model/file'
+#https://github.com/nandinib1999/object-detection-yolo-opencv
 
 net, classes, output_layers = cv_api.load_model()
 camera = cv2.VideoCapture()
 camera_active = False
+is_video = False
 
 class Objects:
     STOP_SIGN = 'STOP_SIGN'
@@ -16,19 +17,29 @@ class Objects:
     PERSON = "PERSON"
 
 def activate_camera():
+    """
+    Activates the robot camera
+    """
     global camera
     global camera_active
+    global is_video
     camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     camera_active = True
+    is_video = False
 
-def get_camera_image():
+def get_camera_image(skip_frames = 5):
     """
     Retrieves current image from robot camera or video
+    Returns none if the video is done or camera failed
+    :param skip_frames: If playing a video, skip ahead this many frames at a time
     """
     global camera
     global camera_active
     if not camera_active:
         raise Exception("Camera is not active. Call vision.activate_camera() or vision.load_video()")
+    if is_video:
+        for i in range(0, skip_frames):
+            camera.read()
     _, img = camera.read()
     return img
 
@@ -36,6 +47,7 @@ def get_camera_image():
 def load_image(img_path):
     """
     Loads an image file
+    :param img_path: File path to image
     """
     # image loading
     with open(img_path):
@@ -47,13 +59,16 @@ def load_image(img_path):
 def load_video(video_path):
     """
     Loads a video file to emulate camera
+    :param video_path: File path to video
     """
     global camera
     global camera_active
+    global is_video
     with open(video_path):
         pass #Make sure video exists
     camera = cv2.VideoCapture(video_path)
     camera_active = True
+    is_video = True
 
 def _map_objects(objs):
     d = {"stop sign": Objects.STOP_SIGN,

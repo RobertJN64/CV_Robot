@@ -3,6 +3,9 @@ import numpy as np
 import cv2
 import os
 
+fig = None
+ax = None
+
 def load_model():
     """
     Loads Yolo v3 model (called automtically on import)
@@ -59,6 +62,8 @@ def get_box_dimensions(outputs, height, width, thresh=0.3):
     return boxes, confs, class_ids
 
 def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.3, loop=False):
+    global fig
+    global ax
     indexes = cv2.dnn.NMSBoxes(boxes, confs, thresh, thresh)
     font = cv2.FONT_HERSHEY_PLAIN
     for i in range(len(boxes)):
@@ -69,11 +74,19 @@ def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.3, loop=False):
             cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
             cv2.putText(img, label, (x, y - 5), font, 1, color, 1)
 
-    plt.imshow(img)
-    plt.axis('off')
 
     if loop:
+        if fig is None or not plt.fignum_exists(fig.number):
+            fig = plt.figure(figsize=(10,10))
+            ax = fig.add_subplot()
+        ax.clear()
+        ax.imshow(img)
+        ax.axis('off')
         plt.draw()
         plt.pause(0.1)
     else:
+        fig = plt.figure(figsize=(10,10))
+        ax = fig.add_subplot()
+        ax.imshow(img)
+        ax.axis('off')
         plt.show()

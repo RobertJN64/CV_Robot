@@ -74,6 +74,7 @@ def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.3, loop=False):
             cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
             cv2.putText(img, label, (x, y - 5), font, 1, color, 1)
 
+    img = img[:,:,::-1] #convert BGR (for opencv) to RGB (for matplotlib)
 
     if loop:
         if fig is None or not plt.fignum_exists(fig.number):

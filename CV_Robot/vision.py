@@ -1,6 +1,12 @@
 import CV_Robot.opencv_api as cv_api
 import cv2
 
+try:
+    # noinspection PyShadowingBuiltins
+    from printlog import printlog as print
+except ImportError:
+    pass
+
 #https://github.com/nandinib1999/object-detection-yolo-opencv
 
 net, classes, output_layers = cv_api.load_model()
@@ -89,7 +95,7 @@ def _get_objects(image, thresh=0.3):
 
 def show_objects(image, thresh=0.2, local_loop=False):
     """
-    Displays image with boxes around objects, if block=True, waits for escape to be pressed before closing image
+    Displays image with boxes around objects
     :param image: Image object (from load_image)
     :param thresh: Threshold to identify object, default is 30% (0.3)
     :param local_loop: Set to true if running in loop outside of colab

@@ -1,10 +1,17 @@
 try:
+    # noinspection PyShadowingBuiltins
+    from printlog import printlog as print
+except ImportError:
+    pass
+
+try:
     import gpio_cmds
     print("Running on robot...")
     emulate = False
 except ImportError:
     print("Running in emulation mode...")
     emulate = True
+
 
 target_drive_speed = 75
 

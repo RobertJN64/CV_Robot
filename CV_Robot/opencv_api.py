@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import copy
 import cv2
 import os
 
@@ -62,15 +63,18 @@ def get_box_dimensions(outputs, height, width, thresh=0.3):
     return boxes, confs, class_ids
 
 def show_image(img):
+    t_img = img[:, :, ::-1]  # convert BGR (for opencv) to RGB (for matplotlib)
     f = plt.figure(figsize=(10, 10))
     a = f.add_subplot()
-    a.imshow(img)
+    a.imshow(t_img)
     a.axis('off')
     plt.show()
 
 def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.3, loop=False):
     global fig
     global ax
+
+    img = copy.deepcopy(img)
     indexes = cv2.dnn.NMSBoxes(boxes, confs, thresh, thresh)
     font = cv2.FONT_HERSHEY_PLAIN
     for i in range(len(boxes)):

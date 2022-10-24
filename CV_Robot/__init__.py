@@ -1,1 +1,1 @@
-print("CV Robot version 0.1.2")
+print("CV Robot version 0.1.3")

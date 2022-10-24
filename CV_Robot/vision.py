@@ -111,4 +111,4 @@ def show_image(image):
     Displays image
     :param image: Image to display
     """
-    cv_api,show_image(image)
+    cv_api.show_image(image)

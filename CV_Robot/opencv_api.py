@@ -40,7 +40,7 @@ def detect_objects(img, net, outputLayers):
     outputs = net.forward(outputLayers)
     return blob, outputs
 
-def get_box_dimensions(outputs, height, width, thresh=0.3):
+def get_box_dimensions(outputs, height, width, thresh=0.2):
     boxes = []
     confs = []
     class_ids = []
@@ -61,7 +61,7 @@ def get_box_dimensions(outputs, height, width, thresh=0.3):
                 class_ids.append(class_id)
     return boxes, confs, class_ids
 
-def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.3, loop=False):
+def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.2, loop=False):
     global fig
     global ax
     indexes = cv2.dnn.NMSBoxes(boxes, confs, thresh, thresh)

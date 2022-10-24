@@ -40,7 +40,7 @@ def detect_objects(img, net, outputLayers):
     outputs = net.forward(outputLayers)
     return blob, outputs
 
-def get_box_dimensions(outputs, height, width, thresh=0.2):
+def get_box_dimensions(outputs, height, width, thresh=0.3):
     boxes = []
     confs = []
     class_ids = []
@@ -61,7 +61,14 @@ def get_box_dimensions(outputs, height, width, thresh=0.2):
                 class_ids.append(class_id)
     return boxes, confs, class_ids
 
-def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.2, loop=False):
+def show_image(img):
+    f = plt.figure(figsize=(10, 10))
+    a = f.add_subplot()
+    a.imshow(img)
+    a.axis('off')
+    plt.show()
+
+def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.3, loop=False):
     global fig
     global ax
     indexes = cv2.dnn.NMSBoxes(boxes, confs, thresh, thresh)
@@ -74,20 +81,21 @@ def draw_labels(boxes, confs, class_ids, classes, img, thresh=0.2, loop=False):
             cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
             cv2.putText(img, label, (x, y - 5), font, 1, color, 1)
 
-    img = img[:,:,::-1] #convert BGR (for opencv) to RGB (for matplotlib)
+    t_img = img[:,:,::-1] #convert BGR (for opencv) to RGB (for matplotlib)
 
     if loop:
         if fig is None or not plt.fignum_exists(fig.number):
             fig = plt.figure(figsize=(10,10))
             ax = fig.add_subplot()
         ax.clear()
-        ax.imshow(img)
+        ax.imshow(t_img)
         ax.axis('off')
         plt.draw()
         plt.pause(0.1)
     else:
         fig = plt.figure(figsize=(10,10))
         ax = fig.add_subplot()
-        ax.imshow(img)
+        ax.imshow(t_img)
         ax.axis('off')
         plt.show()
+

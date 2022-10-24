@@ -81,7 +81,7 @@ def _map_objects(objs):
          "truck": Objects.TRUCK}
     return [d[obj] for obj in objs if obj in d]
 
-def _get_objects(image, thresh=0.2):
+def _get_objects(image, thresh=0.3):
     height, width, channels = image.shape
     blob, outputs = cv_api.detect_objects(image, net, output_layers)
     boxes, confs, class_ids = cv_api.get_box_dimensions(outputs, height, width, thresh=thresh)
@@ -91,18 +91,24 @@ def show_objects(image, thresh=0.2, local_loop=False):
     """
     Displays image with boxes around objects, if block=True, waits for escape to be pressed before closing image
     :param image: Image object (from load_image)
-    :param thresh: Threshold to identify object, default is 20% (0.2)
+    :param thresh: Threshold to identify object, default is 30% (0.3)
     :param local_loop: Set to true if running in loop outside of colab
     """
     boxes, confs, class_ids = _get_objects(image)
     cv_api.draw_labels(boxes, confs, class_ids, classes, image, thresh=thresh, loop=local_loop)
 
-def find_objects(image, thresh=0.2):
+def find_objects(image, thresh=0.3):
     """
     Runs machine learning model on image specified, returns list of identified objects
     :param image: Image object (from load_image)
-    :param thresh: Threshold to identify object, default is 20% (0.2)
+    :param thresh: Threshold to identify object, default is 30% (0.3)
     """
     _, _, class_ids = _get_objects(image, thresh=thresh)
     return list(set(_map_objects([classes[x] for x in class_ids])))
 
+def show_image(image):
+    """
+    Displays image
+    :param image: Image to display
+    """
+    cv_api,show_image(image)

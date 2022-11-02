@@ -4,14 +4,7 @@ try:
 except ImportError:
     pass
 
-try:
-    import gpio_cmds
-    print("Running on robot...")
-    emulate = False
-except ImportError:
-    print("Running in emulation mode...")
-    emulate = True
-
+#from CV_Robot import is_Server, is_Robot
 
 target_drive_speed = 75
 

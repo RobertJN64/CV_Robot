@@ -1,14 +1,6 @@
 import CV_Robot.opencv_api as cv_api
 import cv2
 
-try:
-    # noinspection PyShadowingBuiltins
-    from printlog import printlog as print
-except ImportError:
-    pass
-
-#https://github.com/nandinib1999/object-detection-yolo-opencv
-
 net, classes, output_layers = cv_api.load_model()
 camera = cv2.VideoCapture()
 camera_active = False
@@ -22,6 +14,37 @@ class Objects:
     FIRE_HYDRANT = "FIRE_HYDRANT"
     PERSON = "PERSON"
     TRUCK = "TRUCK"
+
+    map = {"stop sign": STOP_SIGN,
+         "bicycle": BIKE,
+         "car": CAR,
+         "traffic light": TRAFFIC_LIGHT,
+         "fire hydrant": FIRE_HYDRANT,
+         "person": PERSON,
+         "truck": TRUCK}
+
+class VisionObject:
+    """
+    VisionObject - holds information about a recognized object in an image
+    Name: Object - type of object
+    Size: float - in square pixels
+    BBox: list[int] - x, y, width, height
+    X: float - center x
+    Y: float - center y
+    """
+    def __init__(self, box: list[float], conf: float, class_id: int):
+        self.Name: Objects = Objects.map[classes[class_id]]
+        self.Size: float = box[2] * box[3]
+        self.BBox = box #x, y, width, height
+        self.Conf = conf
+        self.X: float = box[0] + box[2] / 2
+        self.Y: float = box[1] + box[3] / 2
+
+        self._class_id: int = class_id
+        self._class: str = classes[self._class_id]
+
+    def __repr__(self):
+        return f"VisionObject<{self.Name}> at ({self.X}, {self.Y})"
 
 def activate_camera():
     """
@@ -77,44 +100,38 @@ def load_video(video_path):
     camera_active = True
     is_video = True
 
-def _map_objects(objs):
-    d = {"stop sign": Objects.STOP_SIGN,
-         "bicycle": Objects.BIKE,
-         "car": Objects.CAR,
-         "traffic light": Objects.TRAFFIC_LIGHT,
-         "fire hydrant": Objects.FIRE_HYDRANT,
-         "person": Objects.PERSON,
-         "truck": Objects.TRUCK}
-    return [d[obj] for obj in objs if obj in d]
-
-def _get_objects(image, thresh=0.3):
+def get_object_locations(image: cv_api.img_typ, thresh: float = 0.3):
+    """
+    Returns a list of VisionObjects which can be used to find object location and size
+    :param image: Image object (from load_image)
+    :param thresh: Threshold to identify object, default is 30% (0.3)
+    """
     height, width, channels = image.shape
-    blob, outputs = cv_api.detect_objects(image, net, output_layers)
-    boxes, confs, class_ids = cv_api.get_box_dimensions(outputs, height, width, thresh=thresh)
-    return boxes, confs, class_ids
+    outputs = cv_api.detect_objects(image, net, output_layers)
+    return [VisionObject(*item) for item in zip(*cv_api.get_box_dimensions(outputs, height, width, thresh=thresh))
+            if classes[item[2]] in Objects.map.keys()]
 
-def show_objects(image, thresh=0.2, local_loop=False):
+def show_objects(image: cv_api.img_typ, thresh: float = 0.3, pause: bool = False):
     """
     Displays image with boxes around objects
     :param image: Image object (from load_image)
     :param thresh: Threshold to identify object, default is 30% (0.3)
-    :param local_loop: Set to true if running in loop outside of colab
+    :param pause: Set to true to pause after showing image (only applies to local emulation)
     """
-    boxes, confs, class_ids = _get_objects(image)
-    cv_api.draw_labels(boxes, confs, class_ids, classes, image, thresh=thresh, loop=local_loop)
+    cv_api.draw_labels(get_object_locations(image, thresh=thresh), image, thresh=thresh, pause=pause)
 
-def find_objects(image, thresh=0.3):
+def find_objects(image: cv_api.img_typ, thresh: float = 0.3):
     """
     Runs machine learning model on image specified, returns list of identified objects
     :param image: Image object (from load_image)
     :param thresh: Threshold to identify object, default is 30% (0.3)
     """
-    _, _, class_ids = _get_objects(image, thresh=thresh)
-    return list(set(_map_objects([classes[x] for x in class_ids])))
+    return list(set(obj.Name for obj in get_object_locations(image, thresh=thresh)))
 
-def show_image(image):
+def show_image(image: cv_api.img_typ, pause: bool = True):
     """
     Displays image
     :param image: Image to display
+    :param pause: Set to true to pause after showing image (only applies to local emulation)
     """
-    cv_api.show_image(image)
+    cv_api.show_image(image, pause=pause)

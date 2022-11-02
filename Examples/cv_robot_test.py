@@ -5,30 +5,30 @@ vision.activate_camera()
 robot.forward()
 while True:
     img = vision.get_camera_image()
-    vision.show_objects(img, local_loop=True)
-    if vision.Objects.STOP_SIGN in vision.find_objects(img):
+    vision.show_objects(img)
+    if vision.Objects.PERSON not in vision.find_objects(img):
         break
 robot.stop()
 
 
 import os
-for item in os.listdir('Examples/db_lisa_tiny'):
+for item in os.listdir('Samples/100samples'):
     print(item)
-    img = vision.load_image("Examples/db_lisa_tiny/" + item)
+    img = vision.load_image("Samples/100samples/" + item)
     print(vision.find_objects(img))
     vision.show_objects(img)
 
-img = vision.load_image("Examples/busy_street.jpg")
+img = vision.load_image("Samples/busy_street.jpg")
 print(vision.find_objects(img))
-vision.show_objects(img)
+vision.show_objects(img, pause=True)
 #
 # vision.activate_camera()
-vision.load_video("Examples/pedestrians.mp4")
+vision.load_video("Samples/pedestrians.mp4")
 while True:
     img = vision.get_camera_image()
     if img is None:
         break
     print(vision.find_objects(img))
-    vision.show_objects(img, local_loop=True)
+    vision.show_objects(img)
 
 

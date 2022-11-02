@@ -1,4 +1,5 @@
 import CV_Robot.opencv_api as cv_api
+from typing import List
 import cv2
 
 net, classes, output_layers = cv_api.load_model()
@@ -28,11 +29,11 @@ class VisionObject:
     VisionObject - holds information about a recognized object in an image
     Name: Object - type of object
     Size: float - in square pixels
-    BBox: list[int] - x, y, width, height
+    BBox: list[float] - x, y, width, height
     X: float - center x
     Y: float - center y
     """
-    def __init__(self, box: list[float], conf: float, class_id: int):
+    def __init__(self, box: List[float], conf: float, class_id: int):
         self.Name: Objects = Objects.map[classes[class_id]]
         self.Size: float = box[2] * box[3]
         self.BBox = box #x, y, width, height

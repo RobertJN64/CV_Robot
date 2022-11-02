@@ -40,6 +40,6 @@ https://github.com/nandinib1999/object-detection-yolo-opencv
 #Download some sample videos + images for testing
 wget https://github.com/nandinib1999/object-detection-yolo-opencv/raw/master/videos/pedestrians.mp4
 wget https://github.com/nandinib1999/object-detection-yolo-opencv/raw/master/videos/car_on_road.mp4
-wget -O sample_images.zip https://github.com/RobertJN64/CV_Robot/raw/master/Examples/100samples.zip
+wget -O sample_images.zip https://github.com/RobertJN64/CV_Robot/raw/master/Examples/Samples/100samples.zip
 unzip sample_images.zip -d sample_images
 ```

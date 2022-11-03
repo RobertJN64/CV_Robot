@@ -3,14 +3,13 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from CV_Robot.vision import VisionObject
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
 import cv2
 import os
 
-from CV_Robot import is_Robot, is_Server
+from CV_Robot import useLiveImg, is_Server
 
 fig = None
 ax = None
@@ -64,7 +63,7 @@ def detect_objects(img: img_typ, net: cv2.dnn_Net, outputLayers: list):
 
     return retval
 
-def get_box_dimensions(outputs: list, height: int, width: int, thresh: float = 0.3):
+def get_box_dimensions(outputs: list, thresh: float = 0.3):
     """
     Returns X, Y, width, height of objects
     """
@@ -114,8 +113,12 @@ def show_image(img: img_typ, pause: bool =False):
     ax.set_xticklabels(list(range(0, 101, 25)), fontdict=None, minor=False)
     ax.set_yticklabels(list(range(0, 101, 25)), fontdict=None, minor=False)
 
-    if is_Robot:
-        fig.savefig("cv_robot_img.png")
+    if not useLiveImg:
+        with open('userscripts/img.lck', 'w+') as f:
+            f.write("lck")
+        fig.savefig("userscripts/cv_robot_img.png", bbox_inches='tight', pad_inches=0.1)
+        with open('userscripts/img.lck', 'w+') as f:
+            f.write("")
     elif is_Server and not pause:
         plt.draw()
         plt.pause(0.1)

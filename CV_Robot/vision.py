@@ -109,9 +109,8 @@ def get_object_locations(image: cv_api.img_typ, thresh: float = 0.3):
     :param image: Image object (from load_image)
     :param thresh: Threshold to identify object, default is 30% (0.3)
     """
-    height, width, channels = image.shape
     outputs = cv_api.detect_objects(image, net, output_layers)
-    boxes, confs, class_ids = cv_api.get_box_dimensions(outputs, height, width, thresh=thresh)
+    boxes, confs, class_ids = cv_api.get_box_dimensions(outputs, thresh=thresh)
     v_indexes = cv2.dnn.NMSBoxes(boxes, confs, thresh, thresh) #Filter by seperated boxes
     return [VisionObject(*item) for index, item in enumerate(zip(boxes, confs, class_ids))
             if classes[item[2]] in Objects.map.keys() and index in v_indexes]

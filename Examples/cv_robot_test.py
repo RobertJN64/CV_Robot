@@ -12,18 +12,18 @@ robot.stop()
 
 
 import os
-for item in os.listdir('Samples/100samples'):
+for item in os.listdir('Examples/Samples/100samples'):
     print(item)
-    img = vision.load_image("Samples/100samples/" + item)
+    img = vision.load_image("Examples/Samples/100samples/" + item)
     print(vision.find_objects(img))
     vision.show_objects(img)
 
-img = vision.load_image("Samples/busy_street.jpg")
+img = vision.load_image("Examples/Samples/busy_street.jpg")
 print(vision.find_objects(img))
 vision.show_objects(img, pause=True)
 #
 # vision.activate_camera()
-vision.load_video("Samples/pedestrians.mp4")
+vision.load_video("Examples/Samples/pedestrians.mp4")
 while True:
     img = vision.get_camera_image()
     if img is None:

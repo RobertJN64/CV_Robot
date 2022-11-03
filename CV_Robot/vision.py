@@ -27,6 +27,8 @@ class Objects:
 class VisionObject:
     """
     VisionObject - holds information about a recognized object in an image
+    All dimensions are normalized to 100 by 100
+
     Name: Object - type of object
     Size: float - in square pixels
     BBox: list[float] - x, y, width, height
@@ -35,9 +37,9 @@ class VisionObject:
     """
     def __init__(self, box: List[float], conf: float, class_id: int):
         self.Name: Objects = Objects.map[classes[class_id]]
-        self.Size: float = box[2] * box[3]
+        self.Size: float = round(box[2] * box[3], 3)
         self.BBox = box #x, y, width, height
-        self.Conf = conf
+        self.Conf = round(conf, 3)
         self.X: float = box[0] + box[2] / 2
         self.Y: float = box[1] + box[3] / 2
 
@@ -45,7 +47,7 @@ class VisionObject:
         self._class: str = classes[self._class_id]
 
     def __repr__(self):
-        return f"VisionObject<{self.Name}> at ({self.X}, {self.Y})"
+        return f"VisionObject<{self.Name}> at ({int(round(self.X))}, {int(round(self.Y))})"
 
 def activate_camera():
     """
@@ -109,8 +111,10 @@ def get_object_locations(image: cv_api.img_typ, thresh: float = 0.3):
     """
     height, width, channels = image.shape
     outputs = cv_api.detect_objects(image, net, output_layers)
-    return [VisionObject(*item) for item in zip(*cv_api.get_box_dimensions(outputs, height, width, thresh=thresh))
-            if classes[item[2]] in Objects.map.keys()]
+    boxes, confs, class_ids = cv_api.get_box_dimensions(outputs, height, width, thresh=thresh)
+    v_indexes = cv2.dnn.NMSBoxes(boxes, confs, thresh, thresh) #Filter by seperated boxes
+    return [VisionObject(*item) for index, item in enumerate(zip(boxes, confs, class_ids))
+            if classes[item[2]] in Objects.map.keys() and index in v_indexes]
 
 def show_objects(image: cv_api.img_typ, thresh: float = 0.3, pause: bool = False):
     """
@@ -119,7 +123,7 @@ def show_objects(image: cv_api.img_typ, thresh: float = 0.3, pause: bool = False
     :param thresh: Threshold to identify object, default is 30% (0.3)
     :param pause: Set to true to pause after showing image (only applies to local emulation)
     """
-    cv_api.draw_labels(get_object_locations(image, thresh=thresh), image, thresh=thresh, pause=pause)
+    cv_api.draw_labels(get_object_locations(image, thresh=thresh), image, pause=pause)
 
 def find_objects(image: cv_api.img_typ, thresh: float = 0.3):
     """

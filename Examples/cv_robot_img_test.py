@@ -1,7 +1,6 @@
 from CV_Robot import vision
-img = vision.load_image("Samples/busy_street.jpg")
+img = vision.load_image("Examples/Samples/100samples/sample_005.png")
 
-vision.show_image(img)
-print(vision.get_object_locations(img))
-print(vision.find_objects(img))
-vision.show_objects(img)
+for item in vision.get_object_locations(img):
+    print(item, item.Conf, item.BBox, item.Size)
+vision.show_objects(img, pause=True)

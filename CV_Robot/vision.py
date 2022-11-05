@@ -84,7 +84,8 @@ def get_camera_image(skip_frames = 5):
             camera.read()
 
     if is_Robot and not is_video:
-        return robot_camera.capture(robot_RawCap, format="bgr").array
+        robot_camera.capture(robot_RawCap, format="bgr")
+        return robot_RawCap.array
 
     _, img = camera.read()
     return img

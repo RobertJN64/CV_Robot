@@ -6,6 +6,15 @@
 Library for computer vision code in Google Colab and Raspberry Pi.
 Uses Yolo v3 with OpenCV.
 
+## Config:
+
+Place the following files in the same directory as your script to configure.
+ - CONFIG_CV_SERVER.py - runs in server mode
+ - CONFIG_CV_ROBOT.py - runs in server mode on robot
+ - CONFIG_CV_LIVE_IMG.py - replaces server preview with matplotlib window
+
+By default, the code will not use cameras (great for Google Colab!)
+
 ## Example:
 ```python
 #Imports

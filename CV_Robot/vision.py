@@ -81,7 +81,7 @@ def get_camera_image(skip_frames = 5):
             camera.read()
 
     if is_Robot:
-        return np.array(json.loads(requests.get('http://' + robot_URL  + '/get_camera_array').text))
+        return np.array(json.loads(requests.get('http://' + robot_URL + '/get_camera_array').text)).astype(np.uint8)
 
     _, img = camera.read()
     return img

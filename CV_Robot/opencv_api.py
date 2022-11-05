@@ -9,7 +9,7 @@ import copy
 import cv2
 import os
 
-from CV_Robot import useLiveImg, is_Server
+from CV_Robot import useLiveImg, is_Server, is_Robot
 
 fig = None
 ax = None
@@ -95,6 +95,13 @@ def show_image(img: img_typ, pause: bool =False):
     If on Server - display in exisiting figure with optional pause
     If on Robot - save as "cv_robot_img.py"
     """
+    if is_Robot or (is_Server and not useLiveImg):
+        with open('userscripts/img.lck', 'w+') as f:
+            f.write("lck")
+        cv2.imwrite('userscripts/cv_robot_img.png', img)
+        with open('userscripts/img.lck', 'w+') as f:
+            f.write("")
+
     global fig
     global ax
 
@@ -113,13 +120,8 @@ def show_image(img: img_typ, pause: bool =False):
     ax.set_xticklabels(list(range(0, 101, 25)), fontdict=None, minor=False)
     ax.set_yticklabels(list(range(0, 101, 25)), fontdict=None, minor=False)
 
-    if not useLiveImg:
-        with open('userscripts/img.lck', 'w+') as f:
-            f.write("lck")
-        fig.savefig("userscripts/cv_robot_img.png", bbox_inches='tight', pad_inches=0.1)
-        with open('userscripts/img.lck', 'w+') as f:
-            f.write("")
-    elif is_Server and not pause:
+
+    if is_Server and not pause:
         plt.draw()
         plt.pause(0.1)
     else:

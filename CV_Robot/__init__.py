@@ -22,7 +22,7 @@ try:
 except ImportError:
     is_Robot = False
 
-print("CV Robot version 0.2.0 Alpha 3")
+print("CV Robot version 0.3.0 Alpha 2")
 if is_Robot:
     print("Running on robot...")
 elif is_Server:

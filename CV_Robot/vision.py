@@ -1,15 +1,11 @@
 import CV_Robot.opencv_api as cv_api
 from typing import List
+import numpy as np
+import requests
+import json
 import cv2
 
-from CV_Robot import is_Robot
-if is_Robot:
-    # noinspection PyUnresolvedReferences
-    from picamera.array import PiRGBArray
-    # noinspection PyUnresolvedReferences
-    from picamera import PiCamera
-    robot_camera = PiCamera()
-    robot_RawCap = PiRGBArray(robot_camera)
+from CV_Robot import is_Robot, robot_URL
 
 net, classes, output_layers = cv_api.load_model()
 camera = cv2.VideoCapture()
@@ -65,7 +61,8 @@ def activate_camera():
     global camera
     global camera_active
     global is_video
-    camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    if not is_Robot:
+        camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     camera_active = True
     is_video = False
 
@@ -83,11 +80,8 @@ def get_camera_image(skip_frames = 5):
         for i in range(0, skip_frames):
             camera.read()
 
-    if is_Robot and not is_video:
-        robot_camera.capture(robot_RawCap, format="bgr")
-        arr = robot_RawCap.array
-        robot_RawCap.truncate(0)
-        return arr
+    if is_Robot:
+        return np.array(json.loads(requests.get('http://' + robot_URL  + '/get_camera_array').text))
 
     _, img = camera.read()
     return img

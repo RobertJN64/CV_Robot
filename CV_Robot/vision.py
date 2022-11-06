@@ -2,7 +2,7 @@ import CV_Robot.opencv_api as cv_api
 from typing import List
 import numpy as np
 import requests
-import json
+import base64
 import cv2
 
 from CV_Robot import is_Robot, robot_URL
@@ -81,7 +81,11 @@ def get_camera_image(skip_frames = 5):
             camera.read()
 
     if is_Robot:
-        return np.array(json.loads(requests.get('http://' + robot_URL + '/get_camera_array').text)).astype(np.uint8)
+        #return np.array(json.loads(requests.get('http://' + robot_URL + '/get_camera_array').text)).astype(np.uint8)
+        jpg_original = base64.b64decode(requests.get('http://' + robot_URL + '/get_camera_array_fast').text)
+        jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
+        image_buffer = cv2.imdecode(jpg_as_np, flags=1)
+        return image_buffer
 
     _, img = camera.read()
     return img

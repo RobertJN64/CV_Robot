@@ -27,7 +27,7 @@ def backward():
     """
     print("Driving backward...")
     if is_Robot:
-        requests.get('http://' + robot_URL + '/reverse')
+        requests.get('http://' + robot_URL + '/backward')
 
 def left():
     """

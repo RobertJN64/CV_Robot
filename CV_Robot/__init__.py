@@ -23,7 +23,7 @@ except ImportError:
     is_Robot = False
     robot_URL = "0.0.0.0"
 
-print("CV Robot version 0.4.0")
+print("CV Robot version 0.4.2")
 if is_Robot:
     print("Running on robot...")
 elif is_Server:

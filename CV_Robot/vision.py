@@ -5,7 +5,7 @@ import requests
 import base64
 import cv2
 
-from CV_Robot import is_Robot, robot_URL
+from CV_Robot import is_Robot, robot_URL, is_Server
 
 net, classes, output_layers = cv_api.load_model()
 camera = cv2.VideoCapture()
@@ -159,7 +159,7 @@ def save_image(image: cv_api.img_typ):
     Saves image to file
     :param image: Image to save
     """
-    if is_Robot:
+    if is_Robot or is_Server:
         with open('userscripts/s_img.lck', 'w+') as f:
             f.write("lck")
         cv2.imwrite("userscripts/saved_image.png", image)

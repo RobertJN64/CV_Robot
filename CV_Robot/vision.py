@@ -153,3 +153,17 @@ def show_image(image: cv_api.img_typ, pause: bool = True):
     :param pause: Set to true to pause after showing image (only applies to local emulation)
     """
     cv_api.show_image(image, pause=pause)
+
+def save_image(image: cv_api.img_typ):
+    """
+    Saves image to file
+    :param image: Image to save
+    """
+    if is_Robot:
+        with open('userscripts/s_img.lck', 'w+') as f:
+            f.write("lck")
+        cv2.imwrite("userscripts/saved_image.png", image)
+        with open('userscripts/s_img.lck', 'w+') as f:
+            f.write("")
+    else:
+        cv2.imwrite("saved_image.png", image)

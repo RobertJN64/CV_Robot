@@ -1,4 +1,5 @@
 import requests
+from time import sleep
 
 try:
     # noinspection PyShadowingBuiltins
@@ -17,6 +18,17 @@ def forward():
     print("Driving forward...")
     if is_Robot:
         requests.get('http://' + robot_URL + '/forward')
+
+def forward_straight():
+    """
+    Moves robot forward at speed set by speed command.
+    Uses gyro correction to drive straight
+
+    Runs emulated code if GPIO backend not found.
+    """
+    print("Driving forward (with gyro correction)...")
+    if is_Robot:
+        requests.get('http://' + robot_URL + '/forward_gyro')
 
 
 def backward():
@@ -39,6 +51,21 @@ def left():
     if is_Robot:
         requests.get('http://' + robot_URL + '/left')
 
+def left_angle(x: int):
+    """
+    Turns robot left to a specified angle at speed set by speed command.
+    Runs emulated code if GPIO backend not found.
+
+    :param x: Angle to turn to (0 to 359)
+    """
+    print(f"Turning left {x} degrees...")
+    if is_Robot:
+        requests.get('http://' + robot_URL + '/left_angle?angle=' + str(x))
+
+        while requests.get('http://' + robot_URL + '/done').text != "OK":
+            sleep(1)
+
+
 def right():
     """
     Turns robot right at speed set by speed command.
@@ -48,6 +75,21 @@ def right():
     print("Turning right...")
     if is_Robot:
         requests.get('http://' + robot_URL + '/right')
+
+
+def right_angle(x: int):
+    """
+    Turns robot right to a specified angle at speed set by speed command.
+    Runs emulated code if GPIO backend not found.
+
+    :param x: Angle to turn to (0 to 359)
+    """
+    print(f"Turning right {x} degrees...")
+    if is_Robot:
+        requests.get('http://' + robot_URL + '/right_angle?angle=' + str(x))
+
+        while requests.get('http://' + robot_URL + '/done').text != "OK":
+            sleep(1)
 
 def stop():
     """
